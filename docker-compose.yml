@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  wagtail_site:
+    container_name: wagtail_site
+    build: ./wagtail_site
+    command: gunicorn docker_assignment.wsgi:application --bind 0.0.0.0:8000
+    restart: unless-stopped
+    expose:
+      - 8000
+    depends_on:
+      - mariadb
+    environment:
+      - SQL_ENGINE=django.db.backends.mysql
+      - SQL_DB=wagtail_db
+      - SQL_USER=wagtail_dbusr
+      - SQL_PASSWORD=arbisoft
+    volumes:
+      - ./data/static_volume:/code/home/static
+    networks:
+      - wagtailnet
+
+  mariadb:
+    container_name: wagtail_mariadb
+    image: mariadb:latest
+    volumes:
+      - ./data/mariadb:/var/lib/mariadb/data/
+    environment:
+      - MYSQL_USER=wagtail_dbusr
+      - MYSQL_PASSWORD=arbisoft
+      - MYSQL_DB=wagtail_db
+      - MYSQL_ROOT_PASSWORD=ARBISOFT
+    networks:
+      - wagtailnet
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - "/path/to/static/data/static_volume:/home/wagtail_site/static"
+    networks:
+      - wagtailnet
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+
+networks:
+  wagtailnet:
