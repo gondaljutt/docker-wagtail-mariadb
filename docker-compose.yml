@@ -14,7 +14,7 @@ services:
       - SQL_ENGINE=django.db.backends.mysql
       - SQL_DB=wagtail_db
       - SQL_USER=wagtail_dbusr
-      - SQL_PASSWORD=arbisoft
+      - SQL_PASSWORD=PASSWORD
     volumes:
       - ./data/static_volume:/code/home/static
     networks:
@@ -27,9 +27,9 @@ services:
       - ./data/mariadb:/var/lib/mariadb/data/
     environment:
       - MYSQL_USER=wagtail_dbusr
-      - MYSQL_PASSWORD=arbisoft
+      - MYSQL_PASSWORD=PASSWORD
       - MYSQL_DB=wagtail_db
-      - MYSQL_ROOT_PASSWORD=ARBISOFT
+      - MYSQL_ROOT_PASSWORD=PASSWORD
     networks:
       - wagtailnet
 
